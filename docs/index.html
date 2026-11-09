@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Cotización interactiva del punto de venta de La Arepa en Bogotá. Consulta los equipos y elige las funciones del montaje.">
+  <meta name="theme-color" content="#2a3523">
+  <title>Cotización POS · La Arepa</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="quote.js" defer></script>
+</head>
+<body>
+  <header class="bar">
+    <div class="wrap top">
+      <div class="brand"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="14"/><path d="M8 20c7-6 13-8 20-6M12 24l2-2m6-4 2-2m1 9 2-2M14 13l2-2"/></svg><div><strong>LA AREPA</strong><span>Punto de venta</span></div></div>
+      <button class="print" id="print" type="button"><span aria-hidden="true">↗</span> Imprimir / PDF</button>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="intro" aria-labelledby="title">
+      <div class="hero-copy">
+        <div class="eyebrow"><i></i> COTIZACIÓN PRELIMINAR <span>·</span> BOGOTÁ, COLOMBIA</div>
+        <h1 id="title">Tu caja,<br><em>lista para operar.</em></h1>
+        <p>Equipos para tomar pedidos, imprimir comandas y llevar el cierre de caja en La Arepa.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 330 170"><path class="draw-shadow" d="M17 140c65-20 214-22 289 0"/><path class="draw-line" d="M21 116h288M31 116v30m267-30v30M45 105l13-16h90l17 16v11H45zM64 87V33a4 4 0 0 1 4-4h76a4 4 0 0 1 4 4v56m-75-49h65v38H73zM91 69v-9m13 9V54m13 15V47M87 105h35M190 112V88l9-12h54l9 12v24m-66-22h62m-58 9h49m-45-14V47h45v31m-35-20h24m-24 9h19m-19 8h23m-26 31h31v22h-31zM272 52l7-5m-15-4 3-8m16 28h9"/><circle cx="302" cy="33" r="9"/><path class="draw-line" d="M21 68v12m-6-6h12m143-31v10m-5-5h10"/></svg>
+        <span>01 / PUNTO DE VENTA</span>
+      </div>
+    </section>
+    <div class="layout">
+      <div class="details">
+        <section class="equipment" aria-labelledby="equipment-title">
+          <div class="section-head"><span class="index">01</span><div><h2 id="equipment-title">Componente por componente</h2><p>Una impresora Digital POS para dos copias consecutivas de la comanda.</p></div></div>
+          <ul class="items" id="items"></ul>
+        </section>
+        <section class="extras" aria-labelledby="extras-title">
+          <div class="section-head"><span class="index">02</span><div><h2 id="extras-title">Respaldo eléctrico</h2><p>Elige si quieres sumar una UPS a los equipos.</p></div></div>
+          <div class="extra-card">
+            <label><input id="ups" type="checkbox" checked><span><strong>UPS para impresora y red</strong><small>Respalda la impresora y el router o switch del local.</small></span><b id="ups-price"></b></label>
+          </div>
+        </section>
+        <section class="labor" aria-labelledby="labor-title">
+          <div class="section-head"><span class="index">03</span><div><h2 id="labor-title">Elige las funciones del montaje</h2><p>Precios propuestos en COP. El 50 % de descuento se aplica a cada función.</p></div></div>
+          <p class="labor-note" id="labor-note">Las funciones requieren la instalación base de Odoo. Si la quitas, se desmarca todo el montaje.</p>
+          <fieldset class="extra-card labor-options" aria-describedby="labor-note">
+            <legend class="visually-hidden">Funciones de mano de obra</legend>
+            <div id="labor-options"></div>
+          </fieldset>
+          <div class="labor-subtotal"><span>Mano de obra con descuento</span><strong id="labor-subtotal"></strong></div>
+          <noscript>Activa JavaScript para elegir funciones y calcular el total.</noscript>
+          <div class="print-labor" id="print-labor" hidden>
+            <h3>Funciones incluidas en el montaje</h3>
+            <dl id="print-labor-lines"></dl>
+          </div>
+        </section>
+      </div>
+      <aside class="summary" aria-labelledby="summary-title">
+        <div class="summary-top"><span>LA AREPA / POS</span><span aria-hidden="true">✳</span></div>
+        <h2 id="summary-title">Tu cotización</h2>
+        <p class="summary-config" id="summary-config"></p>
+        <div class="money" aria-live="polite" aria-atomic="true"><span id="total-label">Total de equipos</span><output id="total"></output><small>COP</small></div>
+        <dl id="summary-lines"></dl>
+        <p class="summary-foot">Valores de referencia del 8 de noviembre de 2026. Confirma el precio y la disponibilidad con cada tienda. Envío e integración fiscal se cotizan aparte.</p>
+        <a class="jump" href="#equipment-title">Ver componentes y tiendas <span aria-hidden="true">↓</span></a>
+        <a class="jump" href="#labor-title">Ajustar mano de obra <span aria-hidden="true">↓</span></a>
+      </aside>
+    </div>
+    <section class="delivery" id="telegram-details" aria-labelledby="dispatch-title" hidden>
+      <span class="index" aria-hidden="true">↗</span>
+      <div>
+        <h2 id="dispatch-title">Comandas y despacho por Telegram</h2>
+        <p id="kitchen-details"><strong>Cocina y caja.</strong> Al confirmar el pedido, un bot enviaría la comanda a un grupo privado para la encargada y el parrillero. Incluye número de pedido, productos, cantidades e indicaciones de preparación.</p>
+        <p id="dispatch-details"><strong>Reparto.</strong> Cuando se marque un domicilio como listo, el grupo privado de repartidores recibiría el número de pedido, la dirección y las indicaciones de entrega.</p>
+      </div>
+    </section>
+    <section class="delivery" aria-labelledby="delivery-title">
+      <span class="index">✓</span>
+      <div>
+        <h2 id="delivery-title">Qué probar antes de la entrega</h2>
+        <p>Confirma la duración de la batería del portátil.</p>
+        <p id="print-details">Verifica que una orden imprima dos copias iguales con autocorte antes del cobro y que el cajón abra al cobrar en efectivo.</p>
+        <p id="ups-details">Prueba la impresora y la red con la UPS durante un corte.</p>
+      </div>
+    </section>
+    <footer>La Arepa <span>·</span> Bogotá <span>·</span> Precios en pesos colombianos <span>·</span> <a href="https://github.com/Cassers/la-arepa-pos/blob/main/PLAN.md">Ver plan técnico</a></footer>
+  </main>
+</body>
+</html>
