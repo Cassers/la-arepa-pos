@@ -23,6 +23,14 @@ const catalog = {
     url: "https://www.mercadolibre.com.co/guaya-de-seguridad-4digitos-noble-wedge-para-laptops-dell/up/MCOU3412771099?picker=true",
     icon: "lock",
   },
+  battery: {
+    name: "Batería nueva RJ40G de 63 Wh",
+    details: "Compatible con el Dell Latitude 5420 · 12 meses de garantía anunciada · precio en efectivo o por transferencia. Instalación por confirmar.",
+    seller: "TeCo Market",
+    price: 289000,
+    url: "https://www.computadoresenbogota.com/market/producto/bateria-para-portatil-dell-premium-latitude-5420-5520-precision-3560-type-rj40g-63wh/",
+    icon: "battery",
+  },
   digital: {
     name: "Digital POS DIG-E200I",
     details: "Térmica 80 mm con autocorte · USB y Ethernet · impresión desde Odoo pendiente de validar.",
@@ -68,6 +76,7 @@ const catalog = {
 const iconPaths = {
   laptop: '<rect x="4" y="4" width="16" height="12" rx="2"/><path d="m4 16-2 4h20l-2-4m-11 2h6"/>',
   lock: '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/>',
+  battery: '<rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4m-13-2h4m-2-2v4"/>',
   printer: '<path d="M6 8V3h12v5m0 8h2a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h2"/><path d="M6 14h12v7H6zm11-3h2"/>',
   drawer: '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20m-13 4h6m-3 2h.01"/>',
   cable: '<path d="M7 3v3m3-3v3M6 6h5v4H6zm2.5 4v6a4 4 0 0 0 8 0v-2m-2-4h5v4h-5zm1-3v3m3-3v3"/>',
@@ -92,18 +101,20 @@ const laborOptions = [
 
 const discounted = (price) => price * (100 - discountPercent) / 100;
 
-function calculate({hasUps, selectedIds, laptopId, wantsLock}) {
+function calculate({hasUps, selectedIds, laptopId, wantsLock, wantsBattery = false}) {
   const laptop = catalog[laptopId];
   const hasLock = laptopId === "dell" && wantsLock;
+  const hasBattery = laptopId === "dell" && wantsBattery;
   const equipment = [[laptop, 1]];
   if (hasLock) equipment.push([catalog.lock, 1]);
+  if (hasBattery) equipment.push([catalog.battery, 1]);
   equipment.push([catalog.digital, 1], [catalog.drawer, 1], [catalog.cable, 2], [catalog.paper, 1]);
   if (hasUps) equipment.push([catalog.ups, 1]);
   const hardware = equipment.reduce((total, [item, quantity]) => total + item.price * quantity, 0);
   const selected = laborOptions.filter(({id}) => selectedIds.includes(id));
   const regularLabor = selected.reduce((total, {price}) => total + price, 0);
   const installation = discounted(regularLabor);
-  return {laptop, hasLock, equipment, hardware, selected, regularLabor, discount: regularLabor - installation, installation, total: hardware + installation};
+  return {laptop, hasLock, hasBattery, equipment, hardware, selected, regularLabor, discount: regularLabor - installation, installation, total: hardware + installation};
 }
 
 function renderItems(equipment) {
@@ -124,12 +135,15 @@ function render() {
   const hasUps = byId("ups").checked;
   const selectedIds = laborOptions.filter(({id}) => byId(id).checked).map(({id}) => id);
   const laptopId = byId("laptop-hp").checked ? "hp" : "dell";
+  const isDell = laptopId === "dell";
   const wantsLock = byId("lock").checked;
-  const {laptop, hasLock, equipment, hardware, selected, regularLabor, discount, installation, total} =
-    calculate({hasUps, selectedIds, laptopId, wantsLock});
+  const wantsBattery = byId("battery").checked;
+  const {laptop, hasLock, hasBattery, equipment, hardware, selected, regularLabor, discount, installation, total} =
+    calculate({hasUps, selectedIds, laptopId, wantsLock, wantsBattery});
   const hasLabor = selected.length > 0;
-  byId("lock-option").hidden = laptopId === "hp";
-  byId("hp-lock-note").hidden = laptopId !== "hp";
+  byId("lock-option").hidden = !isDell;
+  byId("battery-option").hidden = !isDell;
+  byId("hp-lock-note").hidden = isDell;
   byId("labor-subtotal").textContent = pesos(installation);
   byId("summary-config").textContent = laptop.name + " · " + catalog.digital.name;
   byId("total-label").textContent = hasLabor ? "Equipos + mano de obra" : "Total de equipos";
@@ -137,7 +151,10 @@ function render() {
   const lines = [
     ["Equipos", pesos(hardware)],
     ["UPS", hasUps ? "Incluida" : "Por agregar"],
-    ...(laptopId === "dell" ? [["Guaya Wedge", hasLock ? "Incluida" : "Por agregar"]] : []),
+    ...(isDell ? [
+      ["Guaya Wedge", hasLock ? "Incluida" : "Por agregar"],
+      ["Batería nueva", hasBattery ? "Incluida" : "Opcional"],
+    ] : []),
     ["Mano de obra · tarifa normal", pesos(regularLabor)],
     ["Descuento del " + discountPercent + " %", discount ? "−" + pesos(discount) : pesos(0)],
     ["Mano de obra con descuento", pesos(installation)],
@@ -161,6 +178,7 @@ function mount() {
   byId("dell-price").textContent = pesos(catalog.dell.price);
   byId("hp-price").textContent = pesos(catalog.hp.price);
   byId("lock-price").textContent = "+" + pesos(catalog.lock.price);
+  byId("battery-price").textContent = "+" + pesos(catalog.battery.price);
   byId("ups-price").textContent = "+" + pesos(catalog.ups.price);
   byId("labor-options").innerHTML = laborOptions.map(({id, name, details, price, optional}) => `
     <label>

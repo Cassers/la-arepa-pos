@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#2a3523">
   <title>Cotización POS · La Arepa</title>
   <link rel="stylesheet" href="style.css">
-  <script src="quote.js" defer></script>
+  <script src="quote.js?v=bateria-20261109" defer></script>
 </head>
 <body>
   <header class="bar">
@@ -33,10 +33,11 @@
         <section class="equipment" aria-labelledby="equipment-title">
           <div class="section-head"><span class="index">01</span><div><h2 id="equipment-title">Componente por componente</h2><p>Una impresora Digital POS para dos copias consecutivas de la comanda.</p></div></div>
           <fieldset class="extra-card equipment-options" id="equipment-options">
-            <legend class="visually-hidden">Portátil y guaya de seguridad</legend>
+            <legend class="visually-hidden">Portátil y accesorios</legend>
             <label><input id="laptop-dell" name="laptop" type="radio" checked><span><strong>Dell Latitude 5420 usado</strong><small>Core i5 · 16 GB RAM · SSD de 256 GB</small></span><b id="dell-price"></b></label>
             <label><input id="laptop-hp" name="laptop" type="radio"><span><strong>HP 14″ nuevo</strong><small>Celeron N4500 · 8 GB RAM · SSD de 512 GB · batería de 41 Wh</small></span><b id="hp-price"></b></label>
             <label id="lock-option"><input id="lock" type="checkbox" checked><span><strong>Guaya de seguridad para el Dell</strong><small>XUE Noble Wedge con clave de 4 dígitos</small></span><b id="lock-price"></b></label>
+            <label id="battery-option"><input id="battery" type="checkbox"><span><strong>Batería nueva para el Dell</strong><small>Opcional · RJ40G compatible de 63 Wh · precio en efectivo o por transferencia</small></span><b id="battery-price"></b></label>
           </fieldset>
           <p class="equipment-note" id="hp-lock-note" hidden>La guaya Wedge corresponde al Dell. Para el HP falta confirmar el tipo de ranura.</p>
           <ul class="items" id="items"></ul>
