@@ -32,6 +32,13 @@
       <div class="details">
         <section class="equipment" aria-labelledby="equipment-title">
           <div class="section-head"><span class="index">01</span><div><h2 id="equipment-title">Componente por componente</h2><p>Una impresora Digital POS para dos copias consecutivas de la comanda.</p></div></div>
+          <fieldset class="extra-card equipment-options" id="equipment-options">
+            <legend class="visually-hidden">Portátil y guaya de seguridad</legend>
+            <label><input id="laptop-dell" name="laptop" type="radio" checked><span><strong>Dell Latitude 5420 usado</strong><small>Core i5 · 16 GB RAM · SSD de 256 GB</small></span><b id="dell-price"></b></label>
+            <label><input id="laptop-hp" name="laptop" type="radio"><span><strong>HP 14″ nuevo</strong><small>Celeron N4500 · 8 GB RAM · SSD de 512 GB · batería de 41 Wh</small></span><b id="hp-price"></b></label>
+            <label id="lock-option"><input id="lock" type="checkbox" checked><span><strong>Guaya de seguridad para el Dell</strong><small>XUE Noble Wedge con clave de 4 dígitos</small></span><b id="lock-price"></b></label>
+          </fieldset>
+          <p class="equipment-note" id="hp-lock-note" hidden>La guaya Wedge corresponde al Dell. Para el HP falta confirmar el tipo de ranura.</p>
           <ul class="items" id="items"></ul>
         </section>
         <section class="extras" aria-labelledby="extras-title">
@@ -61,7 +68,7 @@
         <p class="summary-config" id="summary-config"></p>
         <div class="money" aria-live="polite" aria-atomic="true"><span id="total-label">Total de equipos</span><output id="total"></output><small>COP</small></div>
         <dl id="summary-lines"></dl>
-        <p class="summary-foot">Valores de referencia del 8 de noviembre de 2026. Confirma el precio y la disponibilidad con cada tienda. Envío e integración fiscal se cotizan aparte.</p>
+        <p class="summary-foot">Precios de referencia consultados el 8 y 9 de noviembre de 2026. Confirma el precio y la disponibilidad con cada tienda. Envío e integración fiscal se cotizan aparte.</p>
         <a class="jump" href="#equipment-title">Ver componentes y tiendas <span aria-hidden="true">↓</span></a>
         <a class="jump" href="#labor-title">Ajustar mano de obra <span aria-hidden="true">↓</span></a>
       </aside>

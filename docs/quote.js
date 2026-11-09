@@ -1,13 +1,27 @@
 "use strict";
 
 const catalog = {
-  laptop: {
+  dell: {
     name: "Dell Latitude 5420",
-    details: "Portátil 14″ · i5 de 11.ª gen. · 16 GB RAM · SSD 256 GB. Confirmar batería.",
+    details: "Usado corporativo · 14″ · Core i5-1145G7 · 16 GB RAM · SSD de 256 GB. Confirmar estado de la batería.",
     seller: "Computadores de Segunda",
     price: 1099000,
     url: "https://computadoresusados.co/computador-de-segunda-corporativo/dell-latitude-5420-i5-1145g7/919",
     icon: "laptop",
+  },
+  hp: {
+    name: "HP 14″ nuevo",
+    details: "Intel Celeron N4500 · 8 GB DDR4 · SSD de 512 GB · pantalla HD · batería de 41 Wh. Precio informado por el proveedor.",
+    price: 1290000,
+    icon: "laptop",
+  },
+  lock: {
+    name: "Guaya XUE Noble Wedge",
+    details: "Cable de 2 m con clave de 4 dígitos para la ranura de seguridad del Dell Latitude 5420.",
+    seller: "Mercado Libre",
+    price: 65900,
+    url: "https://www.mercadolibre.com.co/guaya-de-seguridad-4digitos-noble-wedge-para-laptops-dell/up/MCOU3412771099?picker=true",
+    icon: "lock",
   },
   digital: {
     name: "Digital POS DIG-E200I",
@@ -27,7 +41,7 @@ const catalog = {
   },
   cable: {
     name: "Cable de red CAT6",
-    details: "2 m por unidad · un cable para el portátil y uno por impresora.",
+    details: "2 m por unidad · para la impresora y la caja si se conecta por cable.",
     seller: "IP Suministros",
     price: 7319,
     url: "https://www.tienda.ipsuministros.com/index.php/producto/cable-de-parcheo-utp-cat6-2-m-blanco",
@@ -53,6 +67,7 @@ const catalog = {
 
 const iconPaths = {
   laptop: '<rect x="4" y="4" width="16" height="12" rx="2"/><path d="m4 16-2 4h20l-2-4m-11 2h6"/>',
+  lock: '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/>',
   printer: '<path d="M6 8V3h12v5m0 8h2a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h2"/><path d="M6 14h12v7H6zm11-3h2"/>',
   drawer: '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20m-13 4h6m-3 2h.01"/>',
   cable: '<path d="M7 3v3m3-3v3M6 6h5v4H6zm2.5 4v6a4 4 0 0 0 8 0v-2m-2-4h5v4h-5zm1-3v3m3-3v3"/>',
@@ -77,40 +92,52 @@ const laborOptions = [
 
 const discounted = (price) => price * (100 - discountPercent) / 100;
 
-function calculate(hasUps, selectedIds) {
-  const equipment = [
-    [catalog.laptop, 1], [catalog.digital, 1], [catalog.drawer, 1],
-    [catalog.cable, 2], [catalog.paper, 1],
-  ];
+function calculate({hasUps, selectedIds, laptopId, wantsLock}) {
+  const laptop = catalog[laptopId];
+  const hasLock = laptopId === "dell" && wantsLock;
+  const equipment = [[laptop, 1]];
+  if (hasLock) equipment.push([catalog.lock, 1]);
+  equipment.push([catalog.digital, 1], [catalog.drawer, 1], [catalog.cable, 2], [catalog.paper, 1]);
   if (hasUps) equipment.push([catalog.ups, 1]);
   const hardware = equipment.reduce((total, [item, quantity]) => total + item.price * quantity, 0);
   const selected = laborOptions.filter(({id}) => selectedIds.includes(id));
   const regularLabor = selected.reduce((total, {price}) => total + price, 0);
   const installation = discounted(regularLabor);
-  return {equipment, hardware, selected, regularLabor, discount: regularLabor - installation, installation, total: hardware + installation};
+  return {laptop, hasLock, equipment, hardware, selected, regularLabor, discount: regularLabor - installation, installation, total: hardware + installation};
 }
 
 function renderItems(equipment) {
-  byId("items").innerHTML = equipment.map(([item, quantity]) => `
+  byId("items").innerHTML = equipment.map(([item, quantity]) => {
+    const purchase = item.url
+      ? `<a class="shop" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ver ${item.name} en ${item.seller}, abre en una pestaña nueva">${item.seller} ↗</a>`
+      : '<span class="supplier-note">Enlace pendiente</span>';
+    return `
     <li class="item">
       <div class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${iconPaths[item.icon]}</svg></div>
       <div><h3>${item.name}${quantity > 1 ? " × " + quantity : ""}</h3><p>${item.details}${quantity > 1 ? " " + pesos(item.price) + " c/u." : ""}</p></div>
-      <div class="item-buy"><strong>${pesos(item.price * quantity)}</strong><a class="shop" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ver ${item.name} en ${item.seller}, abre en una pestaña nueva">${item.seller} ↗</a></div>
-    </li>`).join("");
+      <div class="item-buy"><strong>${pesos(item.price * quantity)}</strong>${purchase}</div>
+    </li>`;
+  }).join("");
 }
 
 function render() {
   const hasUps = byId("ups").checked;
   const selectedIds = laborOptions.filter(({id}) => byId(id).checked).map(({id}) => id);
-  const {equipment, hardware, selected, regularLabor, discount, installation, total} = calculate(hasUps, selectedIds);
+  const laptopId = byId("laptop-hp").checked ? "hp" : "dell";
+  const wantsLock = byId("lock").checked;
+  const {laptop, hasLock, equipment, hardware, selected, regularLabor, discount, installation, total} =
+    calculate({hasUps, selectedIds, laptopId, wantsLock});
   const hasLabor = selected.length > 0;
+  byId("lock-option").hidden = laptopId === "hp";
+  byId("hp-lock-note").hidden = laptopId !== "hp";
   byId("labor-subtotal").textContent = pesos(installation);
-  byId("summary-config").textContent = catalog.digital.name + " × 1" + (hasUps ? " · con UPS" : "");
+  byId("summary-config").textContent = laptop.name + " · " + catalog.digital.name;
   byId("total-label").textContent = hasLabor ? "Equipos + mano de obra" : "Total de equipos";
   byId("total").textContent = pesos(total);
   const lines = [
     ["Equipos", pesos(hardware)],
     ["UPS", hasUps ? "Incluida" : "Por agregar"],
+    ...(laptopId === "dell" ? [["Guaya Wedge", hasLock ? "Incluida" : "Por agregar"]] : []),
     ["Mano de obra · tarifa normal", pesos(regularLabor)],
     ["Descuento del " + discountPercent + " %", discount ? "−" + pesos(discount) : pesos(0)],
     ["Mano de obra con descuento", pesos(installation)],
@@ -131,6 +158,9 @@ function render() {
 }
 
 function mount() {
+  byId("dell-price").textContent = pesos(catalog.dell.price);
+  byId("hp-price").textContent = pesos(catalog.hp.price);
+  byId("lock-price").textContent = "+" + pesos(catalog.lock.price);
   byId("ups-price").textContent = "+" + pesos(catalog.ups.price);
   byId("labor-options").innerHTML = laborOptions.map(({id, name, details, price, optional}) => `
     <label>
@@ -146,6 +176,7 @@ function mount() {
     }
     render();
   });
+  byId("equipment-options").addEventListener("change", render);
   byId("ups").addEventListener("change", render);
   byId("print").addEventListener("click", () => window.print());
   render();

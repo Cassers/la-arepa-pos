@@ -30,6 +30,8 @@ La propuesta usa **Odoo Community 19** con PostgreSQL en una instalación admini
 
 El reparto de honorarios entre funciones es una propuesta que conserva el precio del montaje inicial. La instalación base se incluye cuando se elige otra función. La apariencia cubre colores, logo y tamaños de botones en una pantalla de caja. La licencia de Community se presupuesta en $0. La integración fiscal y el envío de equipos se cotizan aparte. Los equipos y sus enlaces de compra están en la [cotización interactiva](https://cassers.github.io/la-arepa-pos/).
 
+La cotización permite elegir el Dell Latitude 5420 usado o el HP nuevo de 14″. La guaya XUE Noble Wedge corresponde al Dell. Para equipar el HP con una guaya, primero hay que confirmar su ranura de seguridad con el proveedor.
+
 ## Montaje y entrega
 
 1. **Preparar el local.** Confirmar la batería y el sistema operativo del portátil, conexiones de la Digital POS DIG-E200I, puerto del cajón y disponibilidad de los equipos. Definir dónde correrán Odoo y PostgreSQL. Montar los equipos y conectar impresora y red local a la UPS si se incluye.
