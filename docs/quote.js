@@ -10,9 +10,12 @@ const catalog = {
     icon: "laptop",
   },
   hp: {
-    name: "HP 14″ nuevo",
-    details: "Intel Celeron N4500 · 8 GB DDR4 · SSD de 512 GB · pantalla HD · batería de 41 Wh. Precio informado por el proveedor.",
+    name: "HP 14-dq3502la nuevo",
+    details: "Intel Celeron N4500 · 8 GB DDR4 · SSD de 512 GB · pantalla HD de 14″ · batería de 41 Wh. El precio corresponde a la oferta recibida.",
+    seller: "TeCo Market",
+    linkLabel: "Comparar en TeCo Market",
     price: 1290000,
+    url: "https://www.computadoresenbogota.com/market/producto/hp-14-dq3502la/",
     icon: "laptop",
   },
   lock: {
@@ -119,9 +122,7 @@ function calculate({hasUps, selectedIds, laptopId, wantsLock, wantsBattery = fal
 
 function renderItems(equipment) {
   byId("items").innerHTML = equipment.map(([item, quantity]) => {
-    const purchase = item.url
-      ? `<a class="shop" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ver ${item.name} en ${item.seller}, abre en una pestaña nueva">${item.seller} ↗</a>`
-      : '<span class="supplier-note">Enlace pendiente</span>';
+    const purchase = `<a class="shop" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ver ${item.name} en ${item.seller}, abre en una pestaña nueva">${item.linkLabel ?? item.seller} ↗</a>`;
     return `
     <li class="item">
       <div class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${iconPaths[item.icon]}</svg></div>
